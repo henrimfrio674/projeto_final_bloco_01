@@ -2,13 +2,15 @@ package LojaBolos.Menu;
 
 import java.util.Scanner;
 
-public class Menu {
+import LojaBolos.Controller.BoloController;
+import LojaBolos.Repository.Bolo;
+import LojaBolos.Repository.BoloPronto;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
-        Scanner ler = new Scanner(System.in);
-        
+public class Menu {
+    private static BoloController boloController = new BoloController();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
         boolean exit = false;
 
         while (!exit) {
@@ -20,31 +22,21 @@ public class Menu {
             System.out.println("5. Sair");
             System.out.print("Escolha uma opção: ");
 
-            int option = ler.nextInt();
-            ler.nextLine();  // Consumir a nova linha
+            int option = scanner.nextInt();
+            scanner.nextLine();  // Consumir a nova linha
 
             switch (option) {
                 case 1:
-                    ler.nextLine();
-                    System.out.print("Informe o novo bolo: ");
-                    String NBolo = ler.nextLine();
+                    adicionarBolo();
                     break;
                 case 2:
-
-                    System.out.print("Lista de bolos: ");
-
+                    listarBolos();
                     break;
                 case 3:
-                	System.out.print("Lista de bolos: ");
-                    ler.nextLine();
-                    System.out.print("Informe o bolo a ser atualizado: ");
-                    String ABolo = ler.nextLine();
+                    atualizarBolo();
                     break;
                 case 4:
-                	System.out.print("Lista de bolos: ");
-                    ler.nextLine();
-                    System.out.print("Informe o bolo a ser removido: ");
-                    String RBolo = ler.nextLine();
+                    removerBolo();
                     break;
                 case 5:
                     exit = true;
@@ -55,7 +47,70 @@ public class Menu {
             }
         }
 
-        ler.close();
-	}
+        scanner.close();
+    }
 
+    private static void adicionarBolo() {
+        System.out.print("Digite o ID do bolo: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consumir a nova linha
+
+        System.out.print("Digite o nome do bolo: ");
+        String nome = scanner.nextLine();
+
+        System.out.print("Digite o preço do bolo: ");
+        double preco = scanner.nextDouble();
+        scanner.nextLine(); // Consumir a nova linha
+
+        System.out.print("Digite o sabor do bolo: ");
+        String sabor = scanner.nextLine();
+
+        System.out.print("Digite a cobertura do bolo: ");
+        String cobertura = scanner.nextLine();
+
+        BoloPronto bolo = new BoloPronto(id, nome, preco, sabor, cobertura);
+        boloController.adicionarBolo(bolo);
+    }
+
+    private static void listarBolos() {
+        System.out.println("\n=== Lista de Bolos ===");
+        for (Bolo bolo : boloController.listarBolos()) {
+            System.out.println(bolo);
+        }
+    }
+
+    private static void atualizarBolo() {
+        System.out.print("Digite o ID do bolo a ser atualizado: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consumir a nova linha
+
+        Bolo boloExistente = boloController.buscarBoloPorId(id);
+        if (boloExistente != null) {
+            System.out.print("Digite o novo nome do bolo: ");
+            String nome = scanner.nextLine();
+
+            System.out.print("Digite o novo preço do bolo: ");
+            double preco = scanner.nextDouble();
+            scanner.nextLine(); // Consumir a nova linha
+
+            System.out.print("Digite o novo sabor do bolo: ");
+            String sabor = scanner.nextLine();
+
+            System.out.print("Digite a nova cobertura do bolo: ");
+            String cobertura = scanner.nextLine();
+
+            BoloPronto boloAtualizado = new BoloPronto(id, nome, preco, sabor, cobertura);
+            boloController.atualizarBolo(boloAtualizado);
+        } else {
+            System.out.println("Bolo não encontrado.");
+        }
+    }
+
+    private static void removerBolo() {
+        System.out.print("Digite o ID do bolo a ser removido: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consumir a nova linha
+
+        boloController.removerBolo(id);
+    }
 }
