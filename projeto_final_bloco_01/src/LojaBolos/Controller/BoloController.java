@@ -8,9 +8,12 @@ import LojaBolos.Repository.BoloRepository;
 
 public class BoloController implements BoloRepository {
     private List<Bolo> bolos = new ArrayList<>();
+    private List<Bolo> bolosRemovidos = new ArrayList<>();
+    private static int nextId = 1;
 
     @Override
     public void adicionarBolo(Bolo bolo) {
+        bolo.setId(nextId++);
         bolos.add(bolo);
         System.out.println("Bolo adicionado: " + bolo);
     }
@@ -41,9 +44,26 @@ public class BoloController implements BoloRepository {
         Bolo boloExistente = buscarBoloPorId(id);
         if (boloExistente != null) {
             bolos.remove(boloExistente);
+            bolosRemovidos.add(boloExistente);
             System.out.println("Bolo removido: " + boloExistente);
         } else {
             System.out.println("Bolo não encontrado.");
         }
     }
+
+    public List<Bolo> listarBolosRemovidos() {
+        return bolosRemovidos;
+    }
+
+    public void restaurarBolo(int id) {
+        Bolo boloRemovido = bolosRemovidos.stream().filter(b -> b.getId() == id).findFirst().orElse(null);
+        if (boloRemovido != null) {
+            bolosRemovidos.remove(boloRemovido);
+            bolos.add(boloRemovido);
+            System.out.println("Bolo restaurado: " + boloRemovido);
+        } else {
+            System.out.println("Bolo não encontrado na lista de bolos removidos.");
+        }
+    }
 }
+
